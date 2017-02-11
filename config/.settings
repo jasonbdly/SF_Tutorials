@@ -1,0 +1,17 @@
+{
+    "projectName": "KSU_Env",
+    "username": "jbradl38@students.kennesaw.edu",
+    "id": "8738fd20-efef-11e6-bdbb-c37f38e130d0",
+    "namespace": "",
+    "orgType": "developer",
+    "loginUrl": "https://login.salesforce.com/",
+    "instanceUrl": "https://na35.salesforce.com",
+    "workspace": "C:\\Users\\Jason\\Documents",
+    "subscription": [
+        "ApexClass",
+        "ApexComponent",
+        "ApexPage",
+        "ApexTrigger",
+        "StaticResource"
+    ]
+}

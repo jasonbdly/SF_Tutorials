@@ -1,0 +1,104 @@
+<apex:page controller="TestObjectEditor_Controller" showHeader="false" sidebar="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false">
+	<head>
+		<apex:stylesheet value="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></apex:stylesheet>
+		<apex:stylesheet value="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"></apex:stylesheet>
+		<apex:includeScript value="//code.jquery.com/jquery-1.12.4.min.js"></apex:includeScript>
+		<apex:includeScript value="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></apex:includeScript>
+		<script type="text/javascript">
+			;(function($) {
+				var $testFieldInput, $saveBtn, $newBtn;
+
+				/*	EXAMPLE
+					URL: /apex/Page?param1=value1&param2=value2
+					RESPONSE: {
+						param1: "value1",
+						param2: "value2"
+					}
+
+					response.param1 => "value1"
+				*/
+				function getURLParams() {
+					var urlParams = {};
+					var searchString = window.location.search;
+					if (searchString.startsWith("?")) {
+						var searchStringParts = searchString.split("?")[1].split("&");
+						searchStringParts.forEach(function(paramPair) {
+							var paramPairParts = paramPair.split("=");
+							urlParams[paramPairParts[0]] = paramPairParts[1];
+						});
+					}
+					return urlParams;
+				}
+
+				$(document).ready(function() {
+					$testFieldInput = $("#testFieldInput");
+					$saveBtn = $("#saveBtn");
+					$newBtn = $("#newBtn");
+
+					var recordId = null;
+
+					$saveBtn.click(function() {
+						TestObjectEditor_Controller.saveTestObject(recordId, $testFieldInput.val(), function(record, event) {
+							if (event.status) {
+								window.location.href = "/apex/TestObjectEditor?id=" + record.Id;
+							} else {
+								console.error(record, event);
+								alert(record);
+							}
+						});
+					});
+
+					$newBtn.click(function() {
+						window.location.href = "/apex/TestObjectEditor";
+					});
+
+					$testFieldInput.keypress(function(keyEvent) {
+						if (keyEvent.which == 13) {
+							$saveBtn.click();
+							return false;
+						}
+					});
+
+					var urlParams = getURLParams();
+					if (urlParams.id) {
+						recordId = urlParams.id;
+
+						TestObjectEditor_Controller.loadTestObject(recordId, function(record, event) {
+							if (event.status) {
+								$testFieldInput.val(record.TestField__c);
+							} else {
+								console.error(record, event);
+								alert(record);
+							}
+						});
+					}
+				});
+			})(jQuery);
+		</script>
+	</head>
+	<body>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="panel panel-primary">
+						<div class="panel-heading">
+							Test Object Editor
+						</div>
+						<div class="panel-body">
+							<form>
+								<div class="form-group">
+									<label for="testFieldInput">Test Field</label>
+									<input type="test" class="form-control" id="testFieldInput" placeholder="Test Field"></input>
+								</div>
+							</form>
+						</div>
+						<div class="panel-footer clearfix">
+							<button class="btn btn-default" type="submit" id="newBtn">New</button>
+							<button class="btn btn-primary pull-right" type="submit" id="saveBtn">Save</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</apex:page>
